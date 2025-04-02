@@ -32,18 +32,14 @@ export const cartSlice = createSlice({
     },
     decrementQuantity: (state, action) => {
       const id = action.payload;
-      const existingItemIndex = state.items.findIndex((item) => item.id === id);
+      const existingItem = findCartItem(state.items, id);
 
-      // Check if item is found in the array
-      if (existingItemIndex !== -1) {
-        const item = state.items[existingItemIndex];
-
-        item.quantity -= 1;
-
-        // If quantity reaches 0, remove the item from
-        // the cart
-        if (item.quantity === 0) {
-          state.items.splice(existingItemIndex, 1);
+      if (existingItem) {
+        if (existingItem.quantity > 1) {
+          existingItem.quantity -= 1;
+        } else {
+          // Remove item if quantity would become zero
+          state.items = state.items.filter((item) => item.id !== id);
         }
       }
     },
@@ -61,6 +57,9 @@ export const {
   clearCart,
 } = cartSlice.actions;
 
+export const selectIsItemInCart = (state, productId) =>
+  state.cart.items.some((item) => item.id === productId);
+
 export const selectCartItems = (state) => state.cart.items;
 
 export const selectTotalItems = createSelector([selectCartItems], (items) =>
@@ -70,5 +69,15 @@ export const selectTotalItems = createSelector([selectCartItems], (items) =>
 export const selectCartTotal = createSelector([selectCartItems], (items) =>
   items.reduce((total, item) => total + item.price * item.quantity, 0)
 );
+
+export const selectAveragePrice = createSelector([selectCartItems], (items) => {
+  const sumPrices = items.reduce((sum, item) => {
+    const newSum = sum + item.price;
+    return newSum;
+  }, 0);
+
+  const average = items.length ? sumPrices / items.length : 0;
+  return average;
+});
 
 export default cartSlice.reducer;

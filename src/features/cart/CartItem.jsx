@@ -14,9 +14,7 @@ const CartItem = ({ item }) => {
       <div className="p-2 flex justify-between items-center max-sm:flex-col max-sm:items-start">
         <div>
           <h3>{item.name}</h3>
-          <p>
-            ${item.price.toFixed(2)} × {item.quantity}
-          </p>
+          <p>${item.price.toFixed(2)}</p>
         </div>
         <div className="flex items-center gap-x-2 max-md:mt-1">
           <button
@@ -34,7 +32,7 @@ const CartItem = ({ item }) => {
           </button>
           <button
             onClick={() => dispatch(removeItemFromCart(item.id))}
-            className="bg-red-700 text-xs px-2 py-0.5 ml-2 hover:bg-red-600"
+            className="bg-red-700 text-sm px-2 py-0.5 ml-2 hover:bg-red-600"
           >
             Remove
           </button>
