@@ -1,13 +1,17 @@
 import { useSelector } from 'react-redux';
-import { selectCartTotal } from './cartSlice';
+import { selectCartTotal, selectTotalItems } from './cartSlice';
 
 const CartTotal = () => {
-  const total = useSelector(selectCartTotal);
+  const totalItems = useSelector(selectTotalItems);
+  const totalPrice = useSelector(selectCartTotal);
 
   return (
-    <div className="mr-1 text-right">
-      <p className='font-mono'>
-        Total: $<span>{total.toFixed(2)}</span>
+    <div className="mr-1 text-right font-mono">
+      <p>
+        Total items: <span>{totalItems}</span>
+      </p>
+      <p>
+        Total price: <span>{totalPrice.toFixed(2)}</span>
       </p>
     </div>
   );

@@ -6,7 +6,6 @@ export const cartSlice = createSlice({
   name: 'cart',
   initialState: {
     items: [],
-    totalItems: 0,
   },
   reducers: {
     addItemToCart: (state, action) => {
@@ -17,8 +16,6 @@ export const cartSlice = createSlice({
           ...action.payload,
           quantity: 1,
         });
-
-        state.totalItems += 1;
       }
     },
     incrementQuantity: (state, action) => {
@@ -27,33 +24,23 @@ export const cartSlice = createSlice({
 
       if (existingItem) {
         existingItem.quantity += 1;
-        state.totalItems += 1;
       }
     },
     removeItemFromCart: (state, action) => {
       const id = action.payload;
-      const itemIndex = state.items.findIndex(item => item.id === id);
-
-      if (itemIndex !== -1) {
-        // Subtract the quantity of the removed item from totalItems
-        state.totalItems -= state.items[itemIndex].quantity;
-
-        // Remove the item from the array
-        state.items.splice(itemIndex, 1);
-      }
+      state.items = state.items.filter((item) => item.id !== id);
     },
     decrementQuantity: (state, action) => {
       const id = action.payload;
-      const existingItemIndex = state.items.findIndex(item => item.id === id);
+      const existingItemIndex = state.items.findIndex((item) => item.id === id);
 
       // Check if item is found in the array
       if (existingItemIndex !== -1) {
         const item = state.items[existingItemIndex];
 
         item.quantity -= 1;
-        state.totalItems -= 1;
 
-        // If quantity reachers 0, remove the item from
+        // If quantity reaches 0, remove the item from
         // the cart
         if (item.quantity === 0) {
           state.items.splice(existingItemIndex, 1);
@@ -62,8 +49,7 @@ export const cartSlice = createSlice({
     },
     clearCart: (state) => {
       state.items = [];
-      state.totalItems = 0;
-    }
+    },
   },
 });
 
@@ -76,12 +62,13 @@ export const {
 } = cartSlice.actions;
 
 export const selectCartItems = (state) => state.cart.items;
-export const selectTotalItems = (state) => state.cart.totalItems;
 
-export const selectCartTotal = createSelector([selectCartItems], (items) => {
-  return items.reduce((total, item) => {
-    return total + item.price * item.quantity;
-  }, 0);
-});
+export const selectTotalItems = createSelector([selectCartItems], (items) =>
+  items.reduce((total, item) => total + item.quantity, 0)
+);
+
+export const selectCartTotal = createSelector([selectCartItems], (items) =>
+  items.reduce((total, item) => total + item.price * item.quantity, 0)
+);
 
 export default cartSlice.reducer;

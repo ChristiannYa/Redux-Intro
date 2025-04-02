@@ -11,14 +11,14 @@ const CartItem = ({ item }) => {
 
   return (
     <div className="w-full p-2">
-      <div className="bg-neutral-200 text-black p-2 flex justify-between items-center">
+      <div className="p-2 flex justify-between items-center max-sm:flex-col max-sm:items-start">
         <div>
           <h3>{item.name}</h3>
           <p>
             ${item.price.toFixed(2)} × {item.quantity}
           </p>
         </div>
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-center gap-x-2 max-md:mt-1">
           <button
             className="bg-red-500 w-[20px] h-[20px] hover:bg-red-400"
             onClick={() => dispatch(decrementQuantity(item.id))}
